@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike } from 'typeorm';
 import { Produto } from '../entities/produto.entity';
@@ -11,15 +11,17 @@ export class ProdutoService {
     private readonly produtoRepository: Repository<Produto>,
 
     @InjectRepository(Categoria)
-    private readonly categoriaRepository: Repository<Categoria>, // agora está injetado corretamente
+    private readonly categoriaRepository: Repository<Categoria>,
   ) {}
 
   async findAll(): Promise<Produto[]> {
-    return await this.produtoRepository.find({ relations: ['categoria'] });
+    return await this.produtoRepository.find({
+      relations: ['categoria'],
+    });
   }
 
   async findById(id: number): Promise<Produto | null> {
-    return await this.produtoRepository.findOne({ 
+    return await this.produtoRepository.findOne({
       where: { id },
       relations: ['categoria'],
     });
@@ -32,13 +34,26 @@ export class ProdutoService {
     });
   }
 
+  // ⭐ EXTRA – BUSCAR PRODUTOS POR CATEGORIA
+  async findByCategoria(categoriaId: number): Promise<Produto[]> {
+    return await this.produtoRepository.find({
+      where: { categoria: { id: categoriaId } },
+      relations: ['categoria'],
+    });
+  }
+
+  // ⭐ EXTRA – CONTAR PRODUTOS
+  async countProdutos(): Promise<number> {
+    return await this.produtoRepository.count();
+  }
+
   async create(produto: Produto): Promise<Produto> {
     const categoria = await this.categoriaRepository.findOne({
-      where: { id: produto.categoria.id },
+      where: { id: produto.categoria?.id },
     });
 
     if (!categoria) {
-      throw new Error('Categoria não encontrada');
+      throw new BadRequestException('Categoria não encontrada');
     }
 
     produto.categoria = categoria;
@@ -46,15 +61,21 @@ export class ProdutoService {
   }
 
   async update(produto: Produto): Promise<Produto> {
-    const categoria = await this.categoriaRepository.findOne({
-      where: { id: produto.categoria.id },
+    return await this.produtoRepository.save(produto);
+  }
+
+  // ⭐ EXTRA – ATUALIZAR SOMENTE A QUANTIDADE
+  async updateQuantidade(id: number, quantidade: number): Promise<Produto> {
+    const produto = await this.produtoRepository.findOne({
+      where: { id },
+      relations: ['categoria'],
     });
 
-    if (!categoria) {
-      throw new Error('Categoria não encontrada');
+    if (!produto) {
+      throw new BadRequestException('Produto não encontrado');
     }
 
-    produto.categoria = categoria;
+    produto.quantidade = quantidade;
     return await this.produtoRepository.save(produto);
   }
 
