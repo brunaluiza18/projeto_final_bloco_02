@@ -30,13 +30,6 @@ Inicie o projeto:
 
 Bash
 npm start
+
 👩‍💻 Bruna Luiza - Desenvolvedora Full Stack em formação. "Foco em resolver problemas complexos através de tecnologia simples e eficiente."
 
-
-### Por que usar este texto?
-* **Palavras-Chave:** "Integração", "Interface Intuitiva", "Boas Práticas". Isso mostra que você não só sabe codar, mas sabe o **porquê** está fazendo aquilo.
-* **Autoridade:** Chamar de "Projeto Consolidado" dá muito mais peso do que apenas "lição de casa".
-
-**Dica rápida:** Como esse é um projeto final, se você tiver o link dele rodando (no Vercel ou Netlify), coloque no campo "Website" nas configurações do repositório no GitHub.
-
-**Quer que eu te ajude a criar o README especial da sua página inicial (Bio do Perfil) agora, para fechar seu GitHub com chave de ouro?** 🚀🎯
